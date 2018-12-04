@@ -1,4 +1,4 @@
-package ba.unsa.etf.rpr.tutorijal07;
+package ba.unsa.rpr.tutorijal7;
 
 import java.util.ArrayList;
 

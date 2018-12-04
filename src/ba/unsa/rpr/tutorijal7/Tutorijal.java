@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class Tutorijal {
@@ -66,9 +67,39 @@ public class Tutorijal {
         Element korijen = xmldoc.getDocumentElement();
        ArrayList<Drzava> listadrzava = new ArrayList<>();
         UcitajElement(korijen,listadrzava);
+      UN un= new UN();
+      un.setListadrzava(listadrzava);
+        Iterator it1 = listadrzava.iterator();
+        Iterator it2= lista.iterator();
+      while(it1.hasNext()) {
+          Grad grad =(Grad) it1.next();
+
+          while(it2.hasNext()){
+
+              Drzava drzava= (Drzava) it2.next();
+              if (drzava.getGlavnigrad().getNaziv().equals(grad.getNaziv())  ){
+                 double niz1 [] = drzava.getGlavnigrad().getTemperature();
+                 double niz2 [] = grad.getTemperature();
+                 int i=0;
+                 while(true){
+                     try{
+                         niz1[i]=niz2[i];
+                         i++;
+                     }
+                     catch(ArrayIndexOutOfBoundsException e) {
+                         break;
+                     }
+
+                 }
 
 
-        return null;
+              }
+          }
+      }
+
+
+
+        return un;
     }
 
    static void UcitajElement(Element element, ArrayList<Drzava> listadrzava){
@@ -89,8 +120,8 @@ public class Tutorijal {
 
            Element povrsina = (Element)listazadrzavu.item(2);
            String jedinicazapovrsinu = (povrsina).getAttribute("jedinica");
-           Double povrsinadrzave = Double.parseDouble(povrsina.getTextContent());
-
+           double povrsinadrzave = Double.parseDouble(povrsina.getTextContent());
+listadrzava.add(new Drzava(nazivdrzave, jedinicazapovrsinu, brstanovnika, povrsinadrzave, new Grad(nazivgrada, brstanovnikagrada, new double[1000]) ));
 
 
         }
