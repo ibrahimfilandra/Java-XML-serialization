@@ -7,11 +7,10 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
+import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -68,20 +67,25 @@ public class Tutorijal {
 
         Element korijen = xmldoc.getDocumentElement();
        ArrayList<Drzava> listadrzava = new ArrayList<>();
+
         UcitajElement(korijen,listadrzava);
-      UN un= new UN();
-      un.setListadrzava(listadrzava);
+
+
+
+        UN un= new UN();
+
         Iterator it1 = listadrzava.iterator();
         Iterator it2= lista.iterator();
-      while(it1.hasNext()) {
-          Grad grad =(Grad) it1.next();
+
+    /*  while(it1.hasNext()) {
+          Grad grad1 =  ( (Drzava) it1.next()).getGlavnigrad() ;
 
           while(it2.hasNext()){
 
-              Drzava drzava= (Drzava) it2.next();
-              if (drzava.getGlavnigrad().getNaziv().equals(grad.getNaziv())  ){
-                 double niz1 [] = drzava.getGlavnigrad().getTemperature();
-                 double niz2 [] = grad.getTemperature();
+              Grad grad2= (Grad) it2.next();
+              if (grad2.getNaziv().equals(grad1.getNaziv())  ){
+                 double niz1 [] = grad1.getTemperature();
+                 double niz2 [] = grad2.getTemperature();
                  int i=0;
                  while(true){
                      try{
@@ -94,11 +98,10 @@ public class Tutorijal {
 
               }
 
-
               }
           }
-      }
-
+      } */
+un.setDrzave(listadrzava);
 
 
         return un;
@@ -107,33 +110,50 @@ public class Tutorijal {
    static void UcitajElement(Element element, ArrayList<Drzava> listadrzava){
 
         NodeList djeca=element.getChildNodes();
+        System.out.println(djeca.getLength());
         for(int i=0;i<djeca.getLength();i++) {
-            Node drzava=djeca.item(i);
-            int brstanovnika=   Integer.parseInt (((Element)drzava).getAttribute("stanovnika"));
-           NodeList listazadrzavu= ((Element) drzava).getChildNodes();
+            Node drzava1=djeca.item(i);
+            if(drzava1 instanceof Element) {
+                Element drzava = (Element) drzava1;
+                System.out.println("ok");
 
-           Element naziv=  (Element)listazadrzavu.item(0);
-           String nazivdrzave= naziv.getTextContent();
+                int brstanovnika = Integer.parseInt(drzava.getAttribute("stanovnika"));
+                NodeList listazadrzavu = drzava.getChildNodes();
+                System.out.println(listazadrzavu.getLength());
+                for (int j = 0; j < listazadrzavu.getLength(); j++){
+                    if (listazadrzavu.item(j) instanceof Element ) {
 
-           Element glavnigrad = (Element)listazadrzavu.item(1);
-           int brstanovnikagrada= Integer.parseInt (glavnigrad.getAttribute("stanovnika"));
-           NodeList listazagrad=glavnigrad.getChildNodes();
-           String nazivgrada= listazagrad.item(0).getTextContent();
+String nazivdrzave="";
+                        Element elementnovi = (Element) listazadrzavu.item(j);
+                        if (elementnovi.getTagName() == "naziv") {
+                             nazivdrzave = elementnovi.getTextContent();
+                        }
 
-           Element povrsina = (Element)listazadrzavu.item(2);
-           String jedinicazapovrsinu = (povrsina).getAttribute("jedinica");
-           double povrsinadrzave = Double.parseDouble(povrsina.getTextContent());
-listadrzava.add(new Drzava(nazivdrzave, jedinicazapovrsinu, brstanovnika, povrsinadrzave, new Grad(nazivgrada, brstanovnikagrada, new double[1000]) ));
+                        int brstanovnikagrada=0;
+                            if(elementnovi.getTagName()=="glavnigrad") {
+                                brstanovnikagrada = Integer.parseInt(elementnovi.getAttribute("stanovnika"));
+                            }
+                            NodeList listazagrad = elementnovi.getChildNodes();
+                            String nazivgrada = listazagrad.item(0).getTextContent();
 
+
+                                Element povrsina = (Element) listazadrzavu.item(2);
+                                String jedinicazapovrsinu = (povrsina).getAttribute("jedinica");
+                                double povrsinadrzave = Double.parseDouble(povrsina.getTextContent());
+                                listadrzava.add(new Drzava(nazivdrzave, jedinicazapovrsinu, brstanovnika, povrsinadrzave, new Grad(nazivgrada, brstanovnikagrada, new double[1000])));
+
+                                System.out.println("dodano je");
+
+
+                    }
+            }
+            }
 
         }
 
-
-
-    }
+}
 
     static void upisiXML(UN un) {
-
 
         try {
             XMLEncoder izlaz = new XMLEncoder(new FileOutputStream("un.xml"));
@@ -148,6 +168,24 @@ System.out.println("Greska: "+e);
     }
 
     public static void main(String[] args) {
+
+        ArrayList<Grad> lista = new ArrayList<>();
+        lista=ucitajGradove();
+
+        UN un= new UN();
+
+        un=ucitajXml(lista);
+      /*   System.out.println(un.getDrzave().get(0).getGlavnigrad().getNaziv());
+        System.out.println(un.getDrzave().get(0).getGlavnigrad().getBrojstanovnika());
+        System.out.println(un.getDrzave().get(0).getBrojstanovnika());
+        System.out.println(un.getDrzave().get(0).getNaziv());
+        System.out.println(un.getDrzave().get(0).getJedinicazapovrsinu());
+        System.out.println(un.getDrzave().get(0).getPovrsina());
+*/
+      System.out.println(un.getDrzave().size());
+
+       // upisiXML(un);
+
 
     }
 
