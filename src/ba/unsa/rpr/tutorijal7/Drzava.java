@@ -1,4 +1,4 @@
-package ba.unsa.etf.rpr.tutorijal07;
+package ba.unsa.rpr.tutorijal7;
 
 public class Drzava {
 
@@ -13,6 +13,14 @@ public class Drzava {
         this.brojstanovnika=0;
         this.povrsina=0;
         this.glavnigrad=new Grad();
+    }
+
+    public Drzava(String naziv, String jedinicazapovrsinu, int brojstanovnika, double povrsina, Grad glavnigrad) {
+        this.naziv = naziv;
+        this.jedinicazapovrsinu = jedinicazapovrsinu;
+        this.brojstanovnika = brojstanovnika;
+        this.povrsina = povrsina;
+        this.glavnigrad = glavnigrad;
     }
 
     public String getNaziv() {
