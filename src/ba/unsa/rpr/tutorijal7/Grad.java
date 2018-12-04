@@ -12,6 +12,11 @@ public class Grad {
         brojstanovnika=0;
     }
 
+    public Grad(String naziv, int brojstanovnika, double[] temperature) {
+        this.naziv = naziv;
+        this.brojstanovnika = brojstanovnika;
+        this.temperature = temperature;
+    }
 
     public String getNaziv() {
         return naziv;
